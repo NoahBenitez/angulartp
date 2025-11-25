@@ -1,0 +1,106 @@
+<!-- STEP 1: SUMMARY -->
+<div *ngIf="step === 1" class="max-w-4xl mx-auto p-6">
+  <h2 class="text-3xl font-bold mb-6">Résumé de la commande</h2>
+  
+  <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+    <div *ngFor="let item of cartItems$ | async" class="flex justify-between items-center py-3 border-b last:border-b-0">
+      <div class="flex items-center gap-3">
+        <span class="text-2xl">{{ item.image }}</span>
+        <div>
+          <div class="font-semibold">{{ item.name }}</div>
+          <div class="text-sm text-gray-600">Qté: {{ item.quantity }}</div>
+        </div>
+      </div>
+      <div class="font-bold">{{ (item.price * item.quantity).toFixed(2) }}€</div>
+    </div>
+    
+    <div class="mt-4 pt-4 border-t">
+      <div class="flex justify-between text-2xl font-bold">
+        <span>Total:</span>
+        <span class="text-blue-600">{{ (cartTotal$ | async)?.toFixed(2) }}€</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="flex gap-4">
+    <button (click)="goToCart()" class="px-6 py-3 bg-gray-200 rounded-lg hover:bg-gray-300 transition">
+      Retour au panier
+    </button>
+    <button (click)="nextStep()" class="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-bold">
+      📍 Continuer vers l'adresse
+    </button>
+  </div>
+</div>
+
+<!-- STEP 2: ADDRESS -->
+<div *ngIf="step === 2" class="max-w-2xl mx-auto p-6">
+  <h2 class="text-3xl font-bold mb-6">Adresse de livraison</h2>
+  
+  <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+    <div class="space-y-4">
+      <div>
+        <label class="block font-semibold mb-2">Nom complet</label>
+        <input type="text" [(ngModel)]="address.name" class="w-full px-4 py-2 border rounded-lg" placeholder="Jean Dupont">
+      </div>
+      
+      <div>
+        <label class="block font-semibold mb-2">Adresse</label>
+        <input type="text" [(ngModel)]="address.street" class="w-full px-4 py-2 border rounded-lg" placeholder="123 Rue de la Paix">
+      </div>
+      
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block font-semibold mb-2">Ville</label>
+          <input type="text" [(ngModel)]="address.city" class="w-full px-4 py-2 border rounded-lg" placeholder="Paris">
+        </div>
+        
+        <div>
+          <label class="block font-semibold mb-2">Code postal</label>
+          <input type="text" [(ngModel)]="address.postal" class="w-full px-4 py-2 border rounded-lg" placeholder="75001">
+        </div>
+      </div>
+      
+      <div>
+        <label class="block font-semibold mb-2">Pays</label>
+        <input type="text" [(ngModel)]="address.country" class="w-full px-4 py-2 border rounded-lg" placeholder="France">
+      </div>
+    </div>
+  </div>
+  
+  <div class="flex gap-4">
+    <button (click)="prevStep()" class="px-6 py-3 bg-gray-200 rounded-lg hover:bg-gray-300 transition">
+      Retour
+    </button>
+    <button 
+      (click)="completeOrder()" 
+      [disabled]="!address.name || !address.street || !address.city"
+      class="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-bold disabled:bg-gray-400 disabled:cursor-not-allowed"
+    >
+      💳 Confirmer la commande
+    </button>
+  </div>
+</div>
+
+<!-- STEP 3: CONFIRMATION -->
+<div *ngIf="step === 3" class="max-w-2xl mx-auto p-6">
+  <div class="bg-white rounded-xl shadow-lg p-12 text-center">
+    <div class="text-8xl mb-6">✅</div>
+    <h2 class="text-3xl font-bold mb-4">Commande confirmée !</h2>
+    <p class="text-xl text-gray-600 mb-2">Merci pour votre achat</p>
+    <p class="text-lg mb-6">
+      Numéro de commande: <span class="font-bold text-blue-600">{{ orderNumber }}</span>
+    </p>
+    
+    <div class="bg-gray-50 rounded-lg p-6 mb-6 text-left">
+      <h3 class="font-bold mb-3">Adresse de livraison:</h3>
+      <p>{{ address.name }}</p>
+      <p>{{ address.street }}</p>
+      <p>{{ address.city }} {{ address.postal }}</p>
+      <p>{{ address.country }}</p>
+    </div>
+    
+    <button (click)="goToShop()" class="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-bold">
+      Retour aux produits
+    </button>
+  </div>
+</div>
